@@ -1,3 +1,7 @@
+output "traffic_manager_profiles_id" {
+  description = "Map of id values across all traffic_manager_profiles, keyed the same as var.traffic_manager_profiles"
+  value       = { for k, v in azurerm_traffic_manager_profile.traffic_manager_profiles : k => v.id }
+}
 output "traffic_manager_profiles_dns_config" {
   description = "Map of dns_config values across all traffic_manager_profiles, keyed the same as var.traffic_manager_profiles"
   value       = { for k, v in azurerm_traffic_manager_profile.traffic_manager_profiles : k => v.dns_config }
