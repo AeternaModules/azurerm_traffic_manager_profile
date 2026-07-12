@@ -16,7 +16,7 @@ resource "azurerm_traffic_manager_profile" "traffic_manager_profiles" {
 
   monitor_config {
     dynamic "custom_header" {
-      for_each = each.value.monitor_config.custom_header != null ? [each.value.monitor_config.custom_header] : []
+      for_each = each.value.monitor_config.custom_header != null ? each.value.monitor_config.custom_header : []
       content {
         name  = custom_header.value.name
         value = custom_header.value.value

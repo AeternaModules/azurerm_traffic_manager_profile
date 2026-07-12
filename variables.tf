@@ -39,10 +39,10 @@ EOT
       ttl           = number
     })
     monitor_config = object({
-      custom_header = optional(object({
+      custom_header = optional(list(object({
         name  = string
         value = string
-      }))
+      })))
       expected_status_code_ranges  = optional(list(string))
       interval_in_seconds          = optional(number) # Default: 30
       path                         = optional(string)
@@ -52,58 +52,13 @@ EOT
       tolerated_number_of_failures = optional(number) # Default: 3
     })
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.traffic_manager_profiles : (
-        length(v.name) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.traffic_manager_profiles : (
-        v.monitor_config.custom_header == null || (length(v.monitor_config.custom_header.name) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.traffic_manager_profiles : (
-        v.monitor_config.port >= 1 && v.monitor_config.port <= 65535
-      )
-    ])
-    error_message = "must be between 1 and 65535"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.traffic_manager_profiles : (
-        v.monitor_config.timeout_in_seconds == null || (v.monitor_config.timeout_in_seconds >= 5 && v.monitor_config.timeout_in_seconds <= 10)
-      )
-    ])
-    error_message = "must be between 5 and 10"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.traffic_manager_profiles : (
-        v.monitor_config.tolerated_number_of_failures == null || (v.monitor_config.tolerated_number_of_failures >= 0 && v.monitor_config.tolerated_number_of_failures <= 9)
-      )
-    ])
-    error_message = "must be between 0 and 9"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.traffic_manager_profiles : (
-        v.max_return == null || (v.max_return >= 1 && v.max_return <= 8)
-      )
-    ])
-    error_message = "must be between 1 and 8"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_traffic_manager_profile's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
   # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: resource_group_name
   #   condition: length(value) <= 90
   #   message:   [from resourcegroups.ValidateName: invalid when len(value) > 90]
@@ -132,12 +87,27 @@ EOT
   #   source:    [from validate.StatusCodeRange] err != nil
   # path: monitor_config.expected_status_code_ranges[*]
   #   source:    [from validate.StatusCodeRange] err != nil
+  # path: monitor_config.custom_header.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: monitor_config.protocol
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: monitor_config.port
+  #   condition: value >= 1 && value <= 65535
+  #   message:   must be between 1 and 65535
   # path: monitor_config.interval_in_seconds
   #   source:    validation.IntInSlice(...) - no translation rule yet, add one
+  # path: monitor_config.timeout_in_seconds
+  #   condition: value >= 5 && value <= 10
+  #   message:   must be between 5 and 10
+  # path: monitor_config.tolerated_number_of_failures
+  #   condition: value >= 0 && value <= 9
+  #   message:   must be between 0 and 9
   # path: profile_status
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: max_return
+  #   condition: value >= 1 && value <= 8
+  #   message:   must be between 1 and 8
   # path: tags
   #   condition: length(value) <= 50
   #   message:   [from tags.Validate: invalid when len(value) > 50]
