@@ -31,7 +31,7 @@ EOT
     resource_group_name    = string
     traffic_routing_method = string
     max_return             = optional(number)
-    profile_status         = optional(string) # Default: "Enabled"
+    profile_status         = optional(string)
     tags                   = optional(map(string))
     traffic_view_enabled   = optional(bool)
     dns_config = object({
@@ -44,12 +44,12 @@ EOT
         value = string
       })))
       expected_status_code_ranges  = optional(list(string))
-      interval_in_seconds          = optional(number) # Default: 30
+      interval_in_seconds          = optional(number)
       path                         = optional(string)
       port                         = number
       protocol                     = string
-      timeout_in_seconds           = optional(number) # Default: 10
-      tolerated_number_of_failures = optional(number) # Default: 3
+      timeout_in_seconds           = optional(number)
+      tolerated_number_of_failures = optional(number)
     })
   }))
   # --- Unconfirmed validation candidates, derived from azurerm_traffic_manager_profile's provider source ---
