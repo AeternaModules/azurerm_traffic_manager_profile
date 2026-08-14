@@ -4,7 +4,7 @@ output "traffic_manager_profiles_id" {
 }
 output "traffic_manager_profiles_dns_config" {
   description = "Map of dns_config values across all traffic_manager_profiles, keyed the same as var.traffic_manager_profiles"
-  value       = { for k, v in azurerm_traffic_manager_profile.traffic_manager_profiles : k => v.dns_config if v.dns_config != null && length(v.dns_config) > 0 }
+  value       = { for k, v in azurerm_traffic_manager_profile.traffic_manager_profiles : k => one(v.dns_config) if v.dns_config != null && length(v.dns_config) > 0 }
 }
 output "traffic_manager_profiles_fqdn" {
   description = "Map of fqdn values across all traffic_manager_profiles, keyed the same as var.traffic_manager_profiles"
@@ -16,7 +16,7 @@ output "traffic_manager_profiles_max_return" {
 }
 output "traffic_manager_profiles_monitor_config" {
   description = "Map of monitor_config values across all traffic_manager_profiles, keyed the same as var.traffic_manager_profiles"
-  value       = { for k, v in azurerm_traffic_manager_profile.traffic_manager_profiles : k => v.monitor_config if v.monitor_config != null && length(v.monitor_config) > 0 }
+  value       = { for k, v in azurerm_traffic_manager_profile.traffic_manager_profiles : k => one(v.monitor_config) if v.monitor_config != null && length(v.monitor_config) > 0 }
 }
 output "traffic_manager_profiles_name" {
   description = "Map of name values across all traffic_manager_profiles, keyed the same as var.traffic_manager_profiles"
